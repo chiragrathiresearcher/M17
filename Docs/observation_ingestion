@@ -1,1 +1,8 @@
+### ⚖️ Module: src/observation_ingestion.py
+**Scientific Task:** Trust Calibration & Sensor Filtering.
 
+**Detailed Purpose:** This module acts as a "Gatekeeper" that judges the quality of incoming data based on the instrument that captured it.
+
+**Internal Logic:**
+- **Instrument Profiles:** Contains a database of sensor reliability (e.g., GPS has 0.99 trust, while Ground Radar has 0.75).
+- **Trust-Inflation:** If data is untrustworthy, it doesn't throw it away; it multiplies the uncertainty by a factor of 2 or more. This makes the "error bars" wider, so the system is less likely to claim a false anomaly.
