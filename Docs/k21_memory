@@ -1,1 +1,9 @@
+### 📚 Module: src/k21_memory.py
+**Scientific Task:** Immutable Ledger & Case Evolution.
 
+**Detailed Purpose:** This module ensures that the research is verifiable and repeatable. It records the history of every satellite audit so that other scientists can see why a "Zombie" flag was raised.
+
+**Internal Logic:**
+- **State Machine:** Manages states like `CONSISTENT` (normal), `TENSION` (suspicious), and `ANOMALOUS` (Zombie).
+- **Invariant Enforcement:** It strictly forbids deleting old data. If new data contradicts old data, it creates a "State Transition" instead of overwriting history.
+- **JSON Registry:** Periodically flushes the memory to a file in `data/outputs/` to ensure no data is lost during a crash.
