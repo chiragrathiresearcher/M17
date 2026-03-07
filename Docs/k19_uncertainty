@@ -1,1 +1,9 @@
+### 🛡️ Module: src/k19_uncertainty.py
+**Scientific Task:** Statistical Validation & Monte Carlo Propagation.
 
+**Detailed Purpose:** Enforces the framework’s core scientific law: **"No value exists without uncertainty."** Its job is to turn a single "guess" at a satellite's location into a mathematically sound "probability cloud."
+
+**Internal Logic:**
+- **UncertainQuantity Class:** A custom data type that pairs every number with its standard deviation.
+- **Monte Carlo Loop:** Generates 10,000 parallel versions of the input data. It runs the physics math on all 10,000 samples to see how the "error bars" grow.
+- **Constraint Clipping:** Prevents uncertainty from becoming infinite by checking it against physical boundaries.
