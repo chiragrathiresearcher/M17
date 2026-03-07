@@ -1,1 +1,9 @@
+### 🌐 Module: src/satellite_bridge.py
+**Scientific Task:** External Data Acquisition & API Management.
 
+**Detailed Purpose:** The Bridge is the project's connection to the Internet. It handles the messy details of talking to space agencies and NASA databases.
+
+**Internal Logic:**
+- **API Connectivity:** Communicates with Celestrak using HTTPS requests.
+- **Caching Logic:** Stores TLE files locally for 1 hour. This prevents your IP from being banned for excessive requests and allows the system to work offline if necessary.
+- **Filtering:** Specifically isolates decommissioned NASA assets for the audit.
