@@ -1,1 +1,9 @@
+### 🚀 Module: src/k20_physics.py
+**Scientific Task:** Orbital Modeling & Delta-V Analysis.
 
+**Detailed Purpose:** K20 defines the "Ballistic Truth." It simulates how a dead satellite *should* behave based purely on the laws of gravity and atmospheric drag.
+
+**Internal Logic:**
+- **SGP4 Propagator:** Uses the standard orbital mechanics model to predict satellite position in the ECI (Earth-Centered Inertial) frame.
+- **Multi-body Simulation:** Can simulate gravity from the Sun, Moon, and Earth simultaneously.
+- **Residual Calculation:** Subtracts the "Observed Velocity" from the "Ballistic Velocity." If the difference (Delta-V) is too high, the module flags the satellite as potentially active.
