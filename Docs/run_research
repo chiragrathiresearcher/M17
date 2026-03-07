@@ -1,1 +1,9 @@
+### 🟢 Module: run_research.py
+**Scientific Task:** Command-Line Interface (CLI) & Executive Control.
 
+**Detailed Purpose:** This is the "Control Tower" of Project M17. It manages the lifecycle of a research session. It is responsible for translating human research goals (e.g., "Audit all LANDSAT satellites") into machine-readable parameters for the workflow.
+
+**Internal Logic:**
+- **Argument Parsing:** Handles flags like `--satellites`, `--norad`, and `--no-uncertainty`.
+- **Environment Setup:** Configures the Python path to ensure all `src/` modules are discoverable.
+- **Reporting:** After the processing is complete, it extracts the "Zombie Scores" and formats a human-readable summary in the terminal.
