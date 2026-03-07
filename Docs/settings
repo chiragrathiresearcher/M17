@@ -1,1 +1,9 @@
+### 🔧 Module: config/settings.py
+**Scientific Task:** Environmental Standardization.
 
+**Detailed Purpose:** Ensures that every part of the project uses the exact same physical constants and directory paths.
+
+**Internal Logic:**
+- **Physical Constants:** Defines the exact mass of the Earth, the Speed of Light, and the Gravitational Constant.
+- **Operational Settings:** Sets the default number of Monte Carlo samples (10,000) and the Trust Threshold.
+- **Auto-Directory Creation:** Ensures that `/data/raw/` and `/data/outputs/` folders exist before the code tries to save anything.
