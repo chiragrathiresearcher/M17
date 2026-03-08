@@ -91,3 +91,16 @@ This output represents a single pass of the M17 filter on a specific NORAD asset
     "justification": "Satellite is counteracting atmospheric drag without documented propulsion capability."
   }
 }
+```
+
+---
+
+## 🚀 5. Installation & Technical Setup
+
+### Environmental Requirements
+* **Python Version:** 3.8 or higher.
+* **Hardware:** Minimum 8GB RAM (required for large-scale Monte Carlo uncertainty propagation).
+
+### Dependencies
+```bash
+pip install numpy pandas requests sgp4 scipy
