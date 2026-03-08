@@ -104,3 +104,39 @@ This output represents a single pass of the M17 filter on a specific NORAD asset
 ### Dependencies
 ```bash
 pip install numpy pandas requests sgp4 scipy
+ ```
+---
+
+## ⌨️ 6. Command Line Interface (CLI)
+
+The `run_research.py` script is the primary entry point for all M17 operations. It handles the orchestration between the physics core and the uncertainty engine.
+
+| Command | Action |
+| :--- | :--- |
+| `python run_research.py` | Runs a standard audit on the top 10 decommissioned NASA assets. |
+| `python run_research.py --satellites 50` | Performs a bulk audit on 50 assets. |
+| `python run_research.py --norad 25994` | Runs a deep-dive physics audit on a specific NORAD ID (e.g., TERRA). |
+| `python run_research.py --summary` | Aggregates all previous audit data into a research summary. |
+| `python run_research.py --no-uncertainty` | Disables K19 (Caution: High risk of false positives). |
+
+
+---
+
+## 🧪 7. Research Applications
+
+Project M17 is designed for the following high-level aerospace research use cases:
+
+1.  **Satellite Life-Extension Detection:** Identifying cases where satellites are being secretly refueled or maintained despite an official "dead" status.
+2.  **Orbital Debris Risk Assessment:** Determining if "dead" fragments are behaving predictably according to atmospheric drag, or if they possess residual attitude control.
+3.  **Space Domain Awareness (SDA):** Providing a secondary, physics-based verification of satellite status independent of government registries.
+
+
+
+---
+
+## 📜 8. Academic Integrity & License
+
+This framework is intended for scientific research and space domain awareness. Users are encouraged to verify all `ANOMALOUS` flags via secondary ground-based optical observation or independent radar cross-section analysis. 
+
+The K-Framework logic is built to be "Falsifiable"—if the physics model (K20) or the uncertainty model (K19) is updated with better data, the Case Memory (K21) will evolve to reflect the new reality.
+
