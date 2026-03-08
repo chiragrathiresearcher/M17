@@ -1,75 +1,93 @@
-# Project M17: K-Framework
-### *Research-Grade Satellite Audit & Anomaly Detection System*
+# K-Framework (Project M17): Physics-Invariant Satellite Auditing
+**Version:** 1.0.0  
+**Status:** Research Grade  
+**Primary Objective:** Detection of anomalous behavior in decommissioned orbital assets via High-Fidelity Physics Filtering.
 
-Project M17 is a specialized scientific pipeline designed to audit decommissioned NASA satellites (e.g., TERRA, AQUA, LANDSAT) for "residual functionality." By integrating multi-body orbital mechanics with rigorous uncertainty quantification, the framework identifies "Zombie" satellites—assets that are officially dead but show orbital behavior inconsistent with passive debris.
+---
+
+## 🌌 1. Executive Summary
+The **K-Framework**, internally designated as **Project M17**, is an automated analytical pipeline designed to audit the "death state" of decommissioned satellites. While official registries may list an asset as retired, decommissioned, or non-functional, M17 treats these labels as hypotheses rather than facts. 
+
+By ingesting raw Two-Line Element (TLE) data and processing it through a multi-layered physics engine, the framework detects deviations from expected passive orbital decay. If a "dead" satellite maintains an orbital state that violates Newtonian constraints for unpowered bodies—such as maintaining a constant altitude or circularizing its orbit without external influence—the system flags the asset as a **"Zombie Satellite."**
 
 
 
 ---
 
-## 🏗 System Architecture
+## 🛠 2. System Architecture & Methodology
 
-The project is built on the **K-Series Modular Logic**, ensuring a strict separation between data acquisition, physical simulation, and scientific memory.
+The framework is built on a modular "K-Series" architecture, ensuring that data ingestion, physical computation, and scientific memory remain decoupled yet synchronized.
 
-### Core Modules
-* **`run_research.py`**: The central entry point. Manages the research lifecycle via CLI.
-* **`src/workflow.py`**: The orchestrator. Connects the physics engine to the uncertainty models.
-* **`src/k19_uncertainty.py`**: **The Uncertainty Engine.** Enforces *Rule 1*: No value exists without uncertainty. Uses Monte Carlo propagation.
-* **`src/k20_physics.py`**: **The Physics Core.** Handles SGP4 orbital propagation and multi-body simulations.
-* **`src/k21_memory.py`**: **Scientific Memory.** A persistent registry that tracks the "state" of a satellite case without deleting history.
-* **`src/satellite_bridge.py`**: Interface for Celestrak and Space-Track APIs.
+### 🛰 K20: The Physics Core
+The **K20 Engine** serves as the ground truth generator. It utilizes the SGP4 (Simplified General Perturbations) model to propagate TLE data into Cartesian state vectors (Position/Velocity). 
+* **Multi-Body Simulation:** Capable of simulating Newtonian gravity across multiple celestial bodies.
+* **State Mapping:** Converts raw TLE strings into highly precise `OrbitalState` objects, calculating eccentricity, inclination, and semi-major axis.
+* **Invariant Checking:** Establishes the "Passive Baseline"—the path a satellite *must* follow if it has no active propulsion.
 
----
+### 📉 K19: Uncertainty Quantification (UQ)
+In orbital mechanics, a measurement without uncertainty is noise. The **K19 Engine** ensures scientific integrity by applying **Rule 1: No value exists without uncertainty.**
+* **Propagation Methods:** Supports Jacobian-based analytical propagation and high-iteration Monte Carlo simulations.
+* **Trust-Aware Inflation:** If data is sourced from low-confidence ground radar, K19 automatically inflates the uncertainty covariance to prevent "False Positive" anomaly detections.
 
-## 🧪 Mathematical Methodology
-
-The K-Framework operates on the principle of **Trust-Aware Propagation**. Unlike standard filters that may discard noisy data, M17 "inflates" uncertainty to preserve potential anomalies.
-
-### 1. Uncertainty Quantification (K19)
-We use a **Monte Carlo (MC) Propagation** method. For any input $X$, the system generates $N$ samples (default $10,000$) based on the source's trust profile:
-$$X_{samples} \sim \mathcal{N}(\mu, \sigma_{inflated})$$
-
-### 2. Orbital Physics (K20)
-States are propagated using the SGP4 (Simplified General Perturbations) model. The core detection metric is the **Delta-V Residual**:
-$$\Delta V_{res} = |V_{observed} - V_{ballistic}|$$
-If $\Delta V_{res}$ exceeds the 99.9th percentile of the propagated uncertainty, the satellite is flagged for manual review.
+### 🧠 K21: Scientific Memory & Case Evolution
+Unlike standard logging systems, **K21** manages "Scientific Cases." It tracks the life cycle of an audit.
+* **State Transitions:** Cases move through states: `CONSISTENT` → `TENSION` → `ANOMALOUS`.
+* **Epistemic Judgments:** Records *why* a satellite was flagged, preserving the logic for peer review.
+* **Persistence:** All anomalies are recorded in the `k21_registry.json`, creating a historical record of "Zombie" behavior over months of observation.
 
 ---
 
-## 🌐 Data Bridge & API Integration
+## 📊 3. Data Ingestion & Trust Modeling
 
-The system pulls real-time orbital data through `src/satellite_bridge.py`. It is configured to interface with:
+Project M17 utilizes the `observation_ingestion.py` module to sanitize incoming data. Not all observations are equal. The system applies an **Observation Trust Model** to weight incoming data based on the source instrument.
 
-* **Celestrak GP API**: Used for fetching General Perturbations (GP) data and TLEs for "active" and "decommissioned" groups.
-* **Space-Track (Optional)**: Support for authenticated TLE history requests.
-* **Trust Calibration**: Every data source is passed through `observation_ingestion.py`, where its **Trust Score** (0.0 to 1.0) is calculated based on instrument precision (e.g., GPS has higher trust than Ground Radar).
+| Instrument Type | Precision | Reliability | Weighting Factor |
+| :--- | :--- | :--- | :--- |
+| **GPS (Onboard)** | 0.99 | 0.99 | 1.0 |
+| **HST (Hubble)** | 0.95 | 0.98 | 0.9 |
+| **Ground Radar** | 0.75 | 0.85 | 0.6 |
+| **Default/Other** | 0.80 | 0.80 | 0.7 |
 
 
 
 ---
 
-## 🤝 Contributor Guidelines
+## 📂 4. Output Structures
 
-We welcome contributions. To maintain scientific integrity, all contributors must follow:
+The framework generates high-density JSON reports. These files are designed to be ingested by visualization tools or used as the basis for published research papers.
 
-1.  **Respect Rule 1**: Any new function returning a physical value MUST return an `UncertainQuantity` object.
-2.  **No Backward Time Travel**: When updating `k21_memory.py`, never overwrite history. Evolve the case state instead.
-3.  **Stateless Physics**: Keep `k20_physics.py` functions pure (input -> calculation -> output).
+### **Sample Audit Log (`data/outputs/satellite_audit_log.json`)**
+This output represents a single pass of the M17 filter on a specific NORAD asset.
 
-### Pull Request Process
-1.  Branch: `feature/k[XX]-description` (e.g., `feature/k20-new-integrator`).
-2.  Validation: Run `python -m src.k19_uncertainty` to ensure the math engine is intact.
-
----
-
-## 🚀 Quick Start
-
-```bash
-# Clone the repo
-git clone [https://github.com/chiragrathiresearcher/m17-k-framework.git](https://github.com/chiragrathiresearcher/m17-k-framework.git)
-
-# Install dependencies
-pip install numpy pandas requests sgp4
-
-# Run a deep-dive audit on a specific satellite (e.g., LANDSAT 7)
-python run_research.py --norad 25731
+```json
+{
+  "audit_meta": {
+    "timestamp": "2026-03-08T17:15:00Z",
+    "framework_version": "1.0.0-M17",
+    "engine": "K20-Physics-Core"
+  },
+  "asset_identity": {
+    "norad_id": "25994",
+    "name": "TERRA",
+    "launch_year": 1999,
+    "official_status": "Decommissioned"
+  },
+  "physics_results": {
+    "current_eccentricity": 0.00012,
+    "expected_decay_rate": "-0.005 km/day",
+    "actual_decay_rate": "+0.001 km/day",
+    "anomalous_thrust_detected": true,
+    "zombie_score": 0.88
+  },
+  "uncertainty_analysis": {
+    "method": "Monte Carlo",
+    "samples": 10000,
+    "confidence_interval": "95%",
+    "sigma_deviation": 4.1
+  },
+  "k21_verdict": {
+    "current_state": "ANOMALOUS",
+    "previous_state": "TENSION",
+    "justification": "Satellite is counteracting atmospheric drag without documented propulsion capability."
+  }
+}
