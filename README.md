@@ -64,8 +64,8 @@ This project is indexed on **Zenodo** and linked via **ORCID**. It is intended f
 
 **Author:** Chirag Rathi  
 **Project:** M17 (K-Framework)  
-**Research ID:** [Insert ORCID Link]  
-**DOI:** [Insert Zenodo DOI]  
+**Research ID:** 0009-0008-1682-4369
+**DOI:** doi.org/10.5281/zenodo.18910231
 
 **License:** This software is provided under the Research-Grade Open License. Unauthorized commercial redistribution is prohibited; academic use is encouraged with proper citation.
 
