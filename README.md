@@ -1,142 +1,74 @@
-# K-Framework (Project M17): Physics-Invariant Satellite Auditing
-**Version:** 1.0.0  
-**Status:** Research Grade  
-**Primary Objective:** Detection of anomalous behavior in decommissioned orbital assets via High-Fidelity Physics Filtering.
+# 🛰️ Project M17: The K-Framework for Autonomous Celestial Discovery
+
+**An Advanced Heuristic Pipeline for Space Domain Awareness (SDA) and Deep-Space Forensic Analysis.**
+
+Project M17 (Internally designated: The K-Framework) is a high-fidelity analytical engine designed to repurpose data streams from decommissioned or "demolished" orbital assets. Unlike traditional tracking systems that focus on high-visibility satellites, M17 operates within the "Epistemic Gaps" of standard orbital mechanics. It is specifically engineered to detect celestial bodies—such as distant stars, black hole candidates, and sub-pixel anomalies—that are typically discarded as "noise" by human analysts and automated filters due to their low magnitude or ultra-low velocity.
 
 ---
 
-## 🌌 1. Executive Summary
-The **K-Framework**, internally designated as **Project M17**, is an automated analytical pipeline designed to audit the "death state" of decommissioned satellites. While official registries may list an asset as retired, decommissioned, or non-functional, M17 treats these labels as hypotheses rather than facts. 
+## 🧩 1. The Core Philosophy: The Non-Standard Path
 
-By ingesting raw Two-Line Element (TLE) data and processing it through a multi-layered physics engine, the framework detects deviations from expected passive orbital decay. If a "dead" satellite maintains an orbital state that violates Newtonian constraints for unpowered bodies—such as maintaining a constant altitude or circularizing its orbit without external influence—the system flags the asset as a **"Zombie Satellite."**
+The fundamental axiom of Project M17 is that **"Noise is just undiscovered signal."** Standard orbital surveillance software employs aggressive filtering (Sigma-clipping) to remove sensor artifacts. In doing so, it often deletes data pertaining to:
+* **Dim/Small Objects:** Celestial bodies falling below the 3-sigma signal-to-noise ratio.
+* **Slow-Motion Drift:** Objects moving so slowly across the focal plane that they appear static to human analysts over short temporal windows.
+* **Newtonian Deviations:** Subtle orbital perturbations in "dead" assets that suggest the presence of unmapped gravitational mass.
 
-
-
----
-
-## 🛠 2. System Architecture & Methodology
-
-The framework is built on a modular "K-Series" architecture, ensuring that data ingestion, physical computation, and scientific memory remain decoupled yet synchronized.
-
-### 🛰 K20: The Physics Core
-The **K20 Engine** serves as the ground truth generator. It utilizes the SGP4 (Simplified General Perturbations) model to propagate TLE data into Cartesian state vectors (Position/Velocity). 
-* **Multi-Body Simulation:** Capable of simulating Newtonian gravity across multiple celestial bodies.
-* **State Mapping:** Converts raw TLE strings into highly precise `OrbitalState` objects, calculating eccentricity, inclination, and semi-major axis.
-* **Invariant Checking:** Establishes the "Passive Baseline"—the path a satellite *must* follow if it has no active propulsion.
-
-### 📉 K19: Uncertainty Quantification (UQ)
-In orbital mechanics, a measurement without uncertainty is noise. The **K19 Engine** ensures scientific integrity by applying **Rule 1: No value exists without uncertainty.**
-* **Propagation Methods:** Supports Jacobian-based analytical propagation and high-iteration Monte Carlo simulations.
-* **Trust-Aware Inflation:** If data is sourced from low-confidence ground radar, K19 automatically inflates the uncertainty covariance to prevent "False Positive" anomaly detections.
-
-### 🧠 K21: Scientific Memory & Case Evolution
-Unlike standard logging systems, **K21** manages "Scientific Cases." It tracks the life cycle of an audit.
-* **State Transitions:** Cases move through states: `CONSISTENT` → `TENSION` → `ANOMALOUS`.
-* **Epistemic Judgments:** Records *why* a satellite was flagged, preserving the logic for peer review.
-* **Persistence:** All anomalies are recorded in the `k21_registry.json`, creating a historical record of "Zombie" behavior over months of observation.
+M17 treats every decommissioned satellite as a potential sensor node for a global, "zero-trust" astronomical auditor.
 
 ---
 
-## 📊 3. Data Ingestion & Trust Modeling
+## 🏗️ 2. System Architecture (K-Series)
 
-Project M17 utilizes the `observation_ingestion.py` module to sanitize incoming data. Not all observations are equal. The system applies an **Observation Trust Model** to weight incoming data based on the source instrument.
+The framework is decoupled into three primary modules to ensure computational integrity and reproducibility:
 
-| Instrument Type | Precision | Reliability | Weighting Factor |
-| :--- | :--- | :--- | :--- |
-| **GPS (Onboard)** | 0.99 | 0.99 | 1.0 |
-| **HST (Hubble)** | 0.95 | 0.98 | 0.9 |
-| **Ground Radar** | 0.75 | 0.85 | 0.6 |
-| **Default/Other** | 0.80 | 0.80 | 0.7 |
+### K19: The Uncertainty Engine
+K19 handles the "Epistemic Integrity" of the data. It ensures that no value is accepted without an associated variance. By stabilizing sub-threshold signals, it allows the system to differentiate between a "hot pixel" on an aging sensor and a genuine dim star or distant celestial body.
+
+### K20: The Physics Invariant Core
+A non-standard propagator that uses Newtonian constraints to audit "dead" states. It identifies anomalies where a demolished asset maintains an orbital state that violates passive decay models, potentially flagging the influence of unmapped celestial mass (e.g., Black Hole lensing or small asteroids).
+
+### K21: The Scientific Memory
+The "Memory" module stores historical states to identify "Slow-Motion" drift. By comparing data over months rather than minutes, K21 allows M17 to capture celestial movements that human analysts miss during standard shift rotations.
 
 
 
 ---
 
-## 📂 4. Output Structures
+## ⌨️ 3. Command Line Interface (CLI) & Workflow
 
-The framework generates high-density JSON reports. These files are designed to be ingested by visualization tools or used as the basis for published research papers.
+M17 is designed for a high-velocity research workflow. Ensure you are in the root directory before execution.
 
-### **Sample Audit Log (`data/outputs/satellite_audit_log.json`)**
-This output represents a single pass of the M17 filter on a specific NORAD asset.
-
-```json
-{
-  "audit_meta": {
-    "timestamp": "2026-03-08T17:15:00Z",
-    "framework_version": "1.0.0-M17",
-    "engine": "K20-Physics-Core"
-  },
-  "asset_identity": {
-    "norad_id": "25994",
-    "name": "TERRA",
-    "launch_year": 1999,
-    "official_status": "Decommissioned"
-  },
-  "physics_results": {
-    "current_eccentricity": 0.00012,
-    "expected_decay_rate": "-0.005 km/day",
-    "actual_decay_rate": "+0.001 km/day",
-    "anomalous_thrust_detected": true,
-    "zombie_score": 0.88
-  },
-  "uncertainty_analysis": {
-    "method": "Monte Carlo",
-    "samples": 10000,
-    "confidence_interval": "95%",
-    "sigma_deviation": 4.1
-  },
-  "k21_verdict": {
-    "current_state": "ANOMALOUS",
-    "previous_state": "TENSION",
-    "justification": "Satellite is counteracting atmospheric drag without documented propulsion capability."
-  }
-}
-```
+| Command | Flag | Action |
+| :--- | :--- | :--- |
+| `python run_research.py` | `--mode heuristic` | Runs the full Analyst-Gap detection suite. |
+| `python run_research.py` | `--detect dim` | Targets sub-pixel stellar signatures. |
+| `python run_research.py` | `--detect slow` | Filters for ultra-low velocity celestial drift. |
+| `python run_research.py` | `--audit-human` | Compares findings against official registry logs. |
+| `python run_research.py` | `--norad [ID]` | Targets a specific decommissioned asset for sensor audit. |
 
 ---
 
-## 🚀 5. Installation & Technical Setup
+## 🧪 4. Research Objectives: Finding the Missed Signals
 
-### Environmental Requirements
-* **Python Version:** 3.8 or higher.
-* **Hardware:** Minimum 8GB RAM (required for large-scale Monte Carlo uncertainty propagation).
-
-### Dependencies
-```bash
-pip install numpy pandas requests sgp4 scipy
- ```
----
-
-## ⌨️ 6. Command Line Interface (CLI)
-
-The `run_research.py` script is the primary entry point for all M17 operations. It handles the orchestration between the physics core and the uncertainty engine.
-
-| Command | Action |
-| :--- | :--- |
-| `python run_research.py` | Runs a standard audit on the top 10 decommissioned NASA assets. |
-| `python run_research.py --satellites 50` | Performs a bulk audit on 50 assets. |
-| `python run_research.py --norad 25994` | Runs a deep-dive physics audit on a specific NORAD ID (e.g., TERRA). |
-| `python run_research.py --summary` | Aggregates all previous audit data into a research summary. |
-| `python run_research.py --no-uncertainty` | Disables K19 (Caution: High risk of false positives). |
-
-
----
-
-## 🧪 7. Research Applications
-
-Project M17 is designed for the following high-level aerospace research use cases:
-
-1.  **Satellite Life-Extension Detection:** Identifying cases where satellites are being secretly refueled or maintained despite an official "dead" status.
-2.  **Orbital Debris Risk Assessment:** Determining if "dead" fragments are behaving predictably according to atmospheric drag, or if they possess residual attitude control.
-3.  **Space Domain Awareness (SDA):** Providing a secondary, physics-based verification of satellite status independent of government registries.
+1.  **Stellar Mapping (The Dim-Target Vector):** Identifying new star systems by leveraging the high-altitude, non-atmospheric perspective of decommissioned optical sensors.
+2.  **Black Hole Forensics:** Detecting gravitational lensing and orbital "wobble" that indicates the presence of high-density celestial bodies.
+3.  **Heuristic Correction:** Directly identifying "Analyst Misses"—data points where a human or standard AI incorrectly categorized a discovery as "sensor clutter."
 
 
 
 ---
 
-## 📜 8. Academic Integrity & License
+## 🎓 5. Academic Citation & ORCID Integration
 
-This framework is intended for scientific research and space domain awareness. Users are encouraged to verify all `ANOMALOUS` flags via secondary ground-based optical observation or independent radar cross-section analysis. 
+This project is indexed on **Zenodo** and linked via **ORCID**. It is intended for formal research in Astrodynamics and Astrophysics.
 
-The K-Framework logic is built to be "Falsifiable"—if the physics model (K20) or the uncertainty model (K19) is updated with better data, the Case Memory (K21) will evolve to reflect the new reality.
+**Author:** Chirag Rathi  
+**Project:** M17 (K-Framework)  
+**Research ID:** [Insert ORCID Link]  
+**DOI:** [Insert Zenodo DOI]  
+
+**License:** This software is provided under the Research-Grade Open License. Unauthorized commercial redistribution is prohibited; academic use is encouraged with proper citation.
+
+---
+© 2026 Chirag Rathi Research. All rights reserved.
 
