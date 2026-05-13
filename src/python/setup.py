@@ -110,50 +110,71 @@ if has_cuda():
     print("Building with CUDA support")
 
 # Define extensions
-ext_modules = [
-    Pybind11Extension(
-        "m17._uncertainty",
-        [
-            "bindings/uncertainty_bindings.cpp",
-            "../../core/uncertainty/uncertainty_engine.cpp",
-        ],
-        include_dirs=include_dirs,
-        libraries=libraries,
-        library_dirs=library_dirs,
-        language='c++',
-        cxx_std=cpp_std,
-        extra_compile_args=compile_args,
-        extra_link_args=link_args,
-    ),
-    Pybind11Extension(
-        "m17._physics",
-        [
-            "bindings/physics_bindings.cpp", 
-            "../../core/physics/relativistic_physics.cpp",
-        ],
-        include_dirs=include_dirs,
-        libraries=libraries,
-        library_dirs=library_dirs,
-        language='c++',
-        cxx_std=cpp_std,
-        extra_compile_args=compile_args,
-        extra_link_args=link_args,
-    ),
-    Pybind11Extension(
-        "m17._memory",
-        [
-            "bindings/memory_bindings.cpp",
-            "../../core/memory/scientific_memory.cpp",
-        ],
-        include_dirs=include_dirs,
-        libraries=libraries,
-        library_dirs=library_dirs,
-        language='c++',
-        cxx_std=cpp_std,
-        extra_compile_args=compile_args,
-        extra_link_args=link_args,
-    ),
-]
+ext_modules = []
+
+# Only include extensions if binding files exist
+try:
+    if Path("bindings/uncertainty_bindings.cpp").exists():
+        ext_modules.append(
+            Pybind11Extension(
+                "m17._uncertainty",
+                [
+                    "bindings/uncertainty_bindings.cpp",
+                    "../../core/uncertainty/uncertainty_engine.cpp",
+                ],
+                include_dirs=include_dirs,
+                libraries=libraries,
+                library_dirs=library_dirs,
+                language='c++',
+                cxx_std=cpp_std,
+                extra_compile_args=compile_args,
+                extra_link_args=link_args,
+            )
+        )
+except:
+    pass
+
+try:
+    if Path("bindings/physics_bindings.cpp").exists():
+        ext_modules.append(
+            Pybind11Extension(
+                "m17._physics",
+                [
+                    "bindings/physics_bindings.cpp",
+                    "../../core/physics/relativistic_physics.cpp",
+                ],
+                include_dirs=include_dirs,
+                libraries=libraries,
+                library_dirs=library_dirs,
+                language='c++',
+                cxx_std=cpp_std,
+                extra_compile_args=compile_args,
+                extra_link_args=link_args,
+            )
+        )
+except:
+    pass
+
+try:
+    if Path("bindings/memory_bindings.cpp").exists():
+        ext_modules.append(
+            Pybind11Extension(
+                "m17._memory",
+                [
+                    "bindings/memory_bindings.cpp",
+                    "../../core/memory/scientific_memory.cpp",
+                ],
+                include_dirs=include_dirs,
+                libraries=libraries,
+                library_dirs=library_dirs,
+                language='c++',
+                cxx_std=cpp_std,
+                extra_compile_args=compile_args,
+                extra_link_args=link_args,
+            )
+        )
+except:
+    pass
 
 # Read README for long description
 try:

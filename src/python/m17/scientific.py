@@ -272,40 +272,40 @@ class UncertainArray:
         """Natural logarithm with uncertainty propagation"""
         if np.any(self.values <= 0):
             raise ValueError("Logarithm of non-positive values")
-        
+
         result_values = np.log(self.values)
         derivative = 1.0 / self.values
         result_uncertainties = derivative * self.uncertainties
-        
+
         return UncertainArray(result_values, result_uncertainties,
-                            correlations=self.correlations)
+                            correlations=self.correlations, units=self.units)
     
     def exp(self):
         """Exponential with uncertainty propagation"""
         result_values = np.exp(self.values)
         derivative = result_values  # d/dx(e^x) = e^x
         result_uncertainties = derivative * self.uncertainties
-        
+
         return UncertainArray(result_values, result_uncertainties,
-                            correlations=self.correlations)
+                            correlations=self.correlations, units=self.units)
     
     def sin(self):
         """Sine with uncertainty propagation"""
         result_values = np.sin(self.values)
         derivative = np.cos(self.values)
         result_uncertainties = np.abs(derivative) * self.uncertainties
-        
+
         return UncertainArray(result_values, result_uncertainties,
-                            correlations=self.correlations)
+                            correlations=self.correlations, units=self.units)
     
     def cos(self):
         """Cosine with uncertainty propagation"""
         result_values = np.cos(self.values)
         derivative = -np.sin(self.values)
         result_uncertainties = np.abs(derivative) * self.uncertainties
-        
+
         return UncertainArray(result_values, result_uncertainties,
-                            correlations=self.correlations)
+                            correlations=self.correlations, units=self.units)
     
     def mean(self, axis=None, weights=None):
         """Weighted mean with uncertainty propagation"""
@@ -854,12 +854,12 @@ def load_gaia_dr3_sample(region=None, magnitude_limit=None, proper_motion_limit=
 def compute_distance_modulus(parallax_mas):
     """
     Compute distance modulus from parallax
-    
+
     Parameters:
     -----------
     parallax_mas : UncertainArray or array-like
         Parallax in milliarcseconds
-        
+
     Returns:
     --------
     UncertainArray
@@ -868,10 +868,11 @@ def compute_distance_modulus(parallax_mas):
     if isinstance(parallax_mas, UncertainArray):
         # Distance in parsecs
         distance_pc = 1000.0 / parallax_mas  # 1000 mas = 1 arcsec = 1/1 pc
-        
+
         # Distance modulus: μ = 5 * log10(d/10)
-        distance_modulus = 5.0 * (distance_pc / 10.0).log()
-        
+        # Using natural log: log10(x) = ln(x) / ln(10)
+        distance_modulus = 5.0 * (distance_pc.log() / np.log(10.0) - 1.0)
+
         return distance_modulus
     else:
         distance_pc = 1000.0 / np.array(parallax_mas)

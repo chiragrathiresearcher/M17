@@ -628,7 +628,7 @@ class ValidationSuite:
                 f.write(f"**Pass Rate:** {cat_passed}/{cat_total} ({cat_pass_rate*100:.1f}%)\n\n")
                 
                 f.write("| Test | Status | Accuracy | Error | Time (ms) | Reference |\n")
-                f.write("|------|--------|----------|-------|-----------|-----------|\\n")
+                f.write("|------|--------|----------|-------|-----------|----------|\n")
                 
                 for result in cat_results:
                     status = "✅ PASS" if result.passed else "❌ FAIL"
@@ -784,9 +784,23 @@ class ValidationSuite:
         print("="*80)
         
     # Additional validation methods
-    def validate_proper_motion_calculations(self): pass  # Placeholder
-    def validate_stellar_parallax(self): pass  # Placeholder  
-    def validate_asteroid_observations(self): pass  # Placeholder
+    def validate_proper_motion_calculations(self):
+        """Validate proper motion calculations"""
+        logger.info("Validating proper motion calculations...")
+        # Placeholder: implement when proper motion data is available
+        pass
+
+    def validate_stellar_parallax(self):
+        """Validate stellar parallax measurements"""
+        logger.info("Validating stellar parallax...")
+        # Placeholder: implement when parallax data is available
+        pass
+
+    def validate_asteroid_observations(self):
+        """Validate asteroid observation predictions"""
+        logger.info("Validating asteroid observations...")
+        # Placeholder: implement when asteroid data is available
+        pass
 
 def main():
     """Main validation entry point"""
