@@ -47,7 +47,7 @@ jobs:
         fetch-depth: 0
         
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         
@@ -92,7 +92,7 @@ jobs:
           --output-file=cppcheck-report.xml src/ || true
           
     - name: Upload code quality artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: code-quality-reports
@@ -111,7 +111,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-20.04, macos-12, windows-2022]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-13, windows-2022]
         compiler: [gcc, clang]
         build-type: [Release, Debug]
         exclude:
@@ -131,8 +131,7 @@ jobs:
     
     env:
       BUILD_TYPE: ${{ matrix.build-type }}
-      
-    steps:
+      steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -207,7 +206,7 @@ jobs:
         vcpkg install eigen3 boost-all tbb hdf5 fftw3 gtest
         
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         
@@ -274,7 +273,7 @@ jobs:
         name: M17-${{ matrix.os }}-${{ matrix.compiler }}
         
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: m17-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build-type }}
         path: |
@@ -377,7 +376,7 @@ jobs:
         "
         
     - name: Upload performance results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: performance-benchmarks
         path: |
@@ -472,7 +471,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         
@@ -508,7 +507,7 @@ jobs:
         publish_dir: ./docs/_build/html
         
     - name: Upload documentation artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: documentation
         path: |
@@ -642,12 +641,13 @@ jobs:
     - name: Notify on success
       if: needs.build-matrix.result == 'success' && needs.docker.result == 'success'
       run: |
-        echo "✅ M17 Framework CI/CD completed successfully!"
+        echo "âœ… M17 Framework CI/CD completed successfully!"
         echo "All builds passed, Docker images pushed, documentation updated."
         
     - name: Notify on failure
       if: needs.build-matrix.result == 'failure' || needs.docker.result == 'failure'
       run: |
-        echo "❌ M17 Framework CI/CD failed!"
-        echo "Check the failed jobs for details."
+        echo "âŒ M17 Framework CI/CD failed!"
+        echo "Chec
+        k the failed jobs for details."
         exit 1
