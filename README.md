@@ -1,6 +1,5 @@
 # M17 — Autonomous Celestial Discovery Framework
 
-[![Build Status](https://github.com/chiragrathiresearcher/m17-framework/workflows/CI/badge.svg)](https://github.com/chiragrathiresearcher/m17-framework/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **M17** is a framework for autonomous astronomical discovery, implementing
