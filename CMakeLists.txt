@@ -10,8 +10,20 @@ project(M17_ChiragRathi
     VERSION 2.0.0
     DESCRIPTION "ChiragRathi M17 Autonomous Celestial Discovery Framework"
     HOMEPAGE_URL "https://github.com/chiragrathiresearcher/m17-framework"
-    LANGUAGES CXX C Fortran
+    LANGUAGES CXX C
 )
+
+# Fortran is optional (only src/fortran/orbital_mechanics.f90 needs it).
+# Declaring it in the project() LANGUAGES list above would make gfortran a
+# hard requirement for EVERYONE running cmake, even those who don't care
+# about the Fortran routines. Probe for it instead and enable only if found.
+include(CheckLanguage)
+check_language(Fortran)
+if(CMAKE_Fortran_COMPILER)
+    enable_language(Fortran)
+else()
+    message(WARNING "No Fortran compiler found - src/fortran/ will be skipped")
+endif()
 
 # Project configuration
 set(CMAKE_CXX_STANDARD 20)
@@ -170,7 +182,6 @@ target_link_libraries(m17_core
         chiragrathi_physics
         chiragrathi_memory
         chiragrathi_fusion
-        chiragrathi_trust
         chiragrathi_integration
         Eigen3::Eigen
         Boost::system
@@ -179,6 +190,14 @@ target_link_libraries(m17_core
         OpenMP::OpenMP_CXX
         Threads::Threads
 )
+
+if(TARGET chiragrathi_trust)
+    target_link_libraries(m17_core PRIVATE chiragrathi_trust)
+endif()
+
+if(TARGET chiragrathi_orbital_mechanics)
+    target_link_libraries(m17_core PRIVATE chiragrathi_orbital_mechanics)
+endif()
 
 if(TBB_FOUND)
     target_link_libraries(m17_core PRIVATE TBB::tbb)
@@ -190,40 +209,67 @@ endif()
 
 # Benchmarking executable
 if(BUILD_BENCHMARKS)
-    add_executable(m17_benchmark
+    set(_m17_benchmark_candidates
         benchmarks/main_benchmark.cpp
         benchmarks/uncertainty_benchmark.cpp
         benchmarks/physics_benchmark.cpp
         benchmarks/memory_benchmark.cpp
     )
-    
-    target_link_libraries(m17_benchmark
-        PRIVATE
-            chiragrathi_uncertainty
-            chiragrathi_physics
-            chiragrathi_memory
-            Eigen3::Eigen
-            Boost::system
-            OpenMP::OpenMP_CXX
-    )
+    set(_m17_benchmark_sources "")
+    foreach(_src ${_m17_benchmark_candidates})
+        if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_src})
+            list(APPEND _m17_benchmark_sources ${_src})
+        else()
+            message(WARNING "Benchmark source not found, skipping: ${_src}")
+        endif()
+    endforeach()
+
+    if(_m17_benchmark_sources)
+        add_executable(m17_benchmark ${_m17_benchmark_sources})
+
+        target_link_libraries(m17_benchmark
+            PRIVATE
+                chiragrathi_uncertainty
+                chiragrathi_physics
+                chiragrathi_memory
+                Eigen3::Eigen
+                Boost::system
+                OpenMP::OpenMP_CXX
+        )
+    else()
+        message(WARNING "No benchmark sources found - m17_benchmark target will not be built")
+        set(BUILD_BENCHMARKS OFF)
+    endif()
 endif()
 
-# Validation executable  
-add_executable(m17_validate
+# Validation executable
+set(_m17_validate_candidates
     tools/validation/main_validation.cpp
     tools/validation/gaia_validation.cpp
     tools/validation/jpl_validation.cpp
     tools/validation/gps_validation.cpp
 )
+set(_m17_validate_sources "")
+foreach(_src ${_m17_validate_candidates})
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_src})
+        list(APPEND _m17_validate_sources ${_src})
+    endif()
+endforeach()
 
-target_link_libraries(m17_validate
-    PRIVATE
-        chiragrathi_uncertainty
-        chiragrathi_physics
-        Eigen3::Eigen
-        Boost::system
-        Boost::program_options
-)
+if(_m17_validate_sources)
+    add_executable(m17_validate ${_m17_validate_sources})
+
+    target_link_libraries(m17_validate
+        PRIVATE
+            chiragrathi_uncertainty
+            chiragrathi_physics
+            Eigen3::Eigen
+            Boost::system
+            Boost::program_options
+    )
+else()
+    message(WARNING "No C++ validation sources found under tools/validation/ (only validate_m17.py exists) - m17_validate target will not be built")
+endif()
 
 # Testing
 if(BUILD_TESTS)
@@ -262,24 +308,35 @@ endif()
 include(GNUInstallDirs)
 
 # Install executables
-install(TARGETS m17_core m17_validate
+install(TARGETS m17_core
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(BUILD_BENCHMARKS)
+if(TARGET m17_validate)
+    install(TARGETS m17_validate
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+endif()
+
+if(BUILD_BENCHMARKS AND TARGET m17_benchmark)
     install(TARGETS m17_benchmark
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 endif()
 
 # Install libraries
-install(TARGETS 
+set(_m17_installable_libs
     chiragrathi_uncertainty
     chiragrathi_physics
     chiragrathi_memory
     chiragrathi_fusion
-    chiragrathi_trust
     chiragrathi_integration
+)
+if(TARGET chiragrathi_trust)
+    list(APPEND _m17_installable_libs chiragrathi_trust)
+endif()
+
+install(TARGETS ${_m17_installable_libs}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
@@ -290,13 +347,15 @@ install(DIRECTORY src/core/
     FILES_MATCHING PATTERN "*.hpp"
 )
 
-# Install data files
-install(DIRECTORY data/
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/chiragrathiresearcher/m17
-    PATTERN "*.txt"
-    PATTERN "*.dat"
-    PATTERN "*.json"
-)
+# Install data files (directory doesn't exist yet - guard until it's added)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/data)
+    install(DIRECTORY data/
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/chiragrathiresearcher/m17
+        PATTERN "*.txt"
+        PATTERN "*.dat"
+        PATTERN "*.json"
+    )
+endif()
 
 # Package configuration
 include(CMakePackageConfigHelpers)
