@@ -1,0 +1,12 @@
+# src/fortran/CMakeLists.txt
+#
+# Only added by the top-level CMakeLists.txt when a Fortran compiler
+# was found (see check_language(Fortran) there).
+
+add_library(chiragrathi_orbital_mechanics STATIC
+    orbital_mechanics.f90
+)
+
+target_include_directories(chiragrathi_orbital_mechanics PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
