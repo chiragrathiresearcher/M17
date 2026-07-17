@@ -1,0 +1,16 @@
+PROJECT_NAME           = "M17 ChiragRathi Framework"
+PROJECT_NUMBER         = 2.0.0
+PROJECT_BRIEF          = "Autonomous Celestial Discovery Framework"
+OUTPUT_DIRECTORY       = docs/doxygen
+INPUT                  = src/core README.md
+RECURSIVE              = YES
+FILE_PATTERNS          = *.hpp *.cpp *.h
+USE_MDFILE_AS_MAINPAGE = README.md
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+HAVE_DOT               = YES
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = NO
