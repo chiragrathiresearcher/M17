@@ -1,0 +1,31 @@
+# src/python/CMakeLists.txt
+#
+# Only added by the top-level CMakeLists.txt when pybind11 was found via
+# find_package(pybind11 CONFIG).
+#
+# NOTE: bindings/*.cpp don't exist yet. setup.py already tolerates this
+# (it only registers a Pybind11Extension if the matching bindings/*.cpp
+# file is present) - this file mirrors that same tolerance for the CMake
+# path so `cmake --build` doesn't fail here either. Building via
+# `pip install .` (setup.py) is currently the supported way to get the
+# Python bindings; this CMake path is a no-op until bindings/ exists.
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bindings/uncertainty_bindings.cpp)
+    pybind11_add_module(_uncertainty
+        bindings/uncertainty_bindings.cpp
+        ${CMAKE_SOURCE_DIR}/src/core/uncertainty/uncertainty_engine.cpp
+    )
+    target_link_libraries(_uncertainty PRIVATE Eigen3::Eigen)
+endif()
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bindings/physics_bindings.cpp)
+    pybind11_add_module(_physics
+        bindings/physics_bindings.cpp
+        ${CMAKE_SOURCE_DIR}/src/core/physics/relativistic_physics.cpp
+    )
+    target_link_libraries(_physics PRIVATE Eigen3::Eigen)
+endif()
+
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
+    message(STATUS "src/python/bindings/ does not exist yet - no pybind11 modules to build via CMake (use 'pip install .' instead)")
+endif()
